@@ -16,45 +16,51 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      height: 100vh;
-      padding-top: 50px;
+      min-height: 100vh;
+      padding: 40px 15px;
+      box-sizing: border-box;
     }
 
     .logo {
-      width: 120px;
-      margin-bottom: 20px;
+      width: 100px;
+      max-width: 30%;
+      margin-bottom: 25px;
     }
 
     h1 {
       font-weight: bold;
       color: white;
-      font-size: 1.5em;
-      margin-bottom: 8px;
+      font-size: 1.6em;
+      margin-bottom: 10px;
+      text-align: center;
     }
 
     p {
       color: #b0b0b0;
-      margin-bottom: 30px;
-      font-size: 0.9em;
+      margin-bottom: 25px;
+      font-size: 1em;
+      text-align: center;
+      line-height: 1.4em;
     }
 
     .phrase-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
+      gap: 12px;
       margin-bottom: 30px;
-      width: 60%;
+      width: 100%;
       max-width: 500px;
     }
 
     .phrase-grid input {
-      width: 75%;
-      padding: 10px;
+      width: 100%;
+      padding: 12px;
       background-color: #2a2b40;
       border: 1px solid #3e3f58;
-      border-radius: 5px;
+      border-radius: 6px;
       color: #d3d3d3;
-      font-size: 0.95em;
+      font-size: 1em;
+      box-sizing: border-box;
     }
 
     .phrase-grid input::placeholder {
@@ -65,11 +71,12 @@
       background-color: #30324f;
       color: white;
       border: none;
-      padding: 10px 25px;
-      border-radius: 5px;
+      padding: 12px 40px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 1em;
       transition: background-color 0.3s;
+      margin-bottom: 50px;
     }
 
     button:hover {
@@ -87,6 +94,8 @@
       justify-content: center;
       align-items: center;
       z-index: 10;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .popup-content {
@@ -95,6 +104,8 @@
       border-radius: 8px;
       text-align: center;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 320px;
     }
 
     .popup-content h2 {
@@ -109,7 +120,38 @@
 
     .popup-content button {
       background-color: #44476a;
-      padding: 8px 20px;
+      padding: 10px 25px;
+      font-size: 1em;
+      border-radius: 5px;
+    }
+
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 800px) {
+      .phrase-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .phrase-grid {
+        grid-template-columns: 1fr;
+      }
+
+      body {
+        padding-top: 30px;
+      }
+
+      h1 {
+        font-size: 1.3em;
+      }
+
+      p {
+        font-size: 0.95em;
+      }
+
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
