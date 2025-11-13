@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Tracker Dashboard</title>
+    <!-- Load Tailwind CSS for professional styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Chart.js for the portfolio diagram -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        /* Style for the transfer history table scroll */
+        .table-container {
+            max-height: 400px; /* Limits the height of the table body */
+            overflow-y: auto;
+        }
+        /* Custom scrollbar for a cleaner look */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
+        /* Style for the token list scroll in the SEND modal */
+        .token-list-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Primary Modal (General purpose messages, Receive, Error) - HIDDEN by default -->
+    <div id="primary-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden transition-opacity duration-300">
+        <div class="bg-white rounded-xl p-6 shadow-2xl max-w-sm w-full transform transition-all scale-100">
+            <h3 id="p-modal-title" class="text-xl font-bold mb-3 text-indigo-700"></h3>
+            <div id="p-modal-content" class="text-gray-600 mb-6 break-words"></div>
+            <button onclick="closeModal('primary-modal')"
+                    class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 font-semibold transition duration-200">
+                OKAY
+            </button>
+        </div>
+    </div>
+
+    <!-- SEND Crypto Selection Modal - HIDDEN by default -->
+    <div id="send-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden transition-opacity duration-300">
+        <div class="bg-white rounded-xl p-6 shadow-2xl max-w-md w-full transform transition-all scale-100">
+            <h3 class="text-2xl font-bold mb-4 text-indigo-700">Choose Cryptocurrency to Send</h3>
+            <div id="token-list" class="token-list-container space-y-2 mb-4 p-2 border rounded-lg">
+                <!-- Tokens will be injected here by JS -->
+            </div>
+            <button onclick="closeModal('send-modal')"
+                    class="w-full bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-400 font-semibold transition duration-200">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- WITHDRAW License Modal - HIDDEN by default -->
+    <div id="withdraw-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden transition-opacity duration-300">
+        <div class="bg-white rounded-xl p-6 shadow-2xl max-w-sm w-full transform transition-all scale-100">
+            <h3 class="text-xl font-bold mb-4 text-indigo-700">Verify Identity for Withdrawal</h3>
+            
+            <label for="license-input" class="block text-sm font-medium text-gray-700 mb-2">INSERT YOUR LICENCE NUMBER</label>
+            <input type="text" id="license-input" placeholder="e.g. 1A2B3C4D" required
+                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 mb-4">
+            
+            <button onclick="handleLicenseProceed(event)"
+                    class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-bold transition duration-200">
+                PROCEED
+            </button>
+
+            <div class="text-center mt-3">
+                <a href="https://example.com/license-help" target="_blank"
+                   class="text-xs text-indigo-500 hover:text-indigo-700 hover:underline transition duration-200">
+                    I DON'T HAVE A LICENCE NUMBER
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+
+        <!-- Section 1: Header/Nav -->
+        <header class="flex justify-between items-center py-4 border-b border-gray-200 mb-6">
+            <!-- Left Corner: Logo -->
+            <img src="https://assets.bitdegree.org/images/btc-markets-review-logo-big.png?tr=w-250" 
+                 alt="Block Tracker Logo" class="h-8 object-contain">
+            
+            <!-- Right Corner: User Info -->
+            <div class="text-md font-medium text-gray-700">
+                Hello! <span class="text-indigo-600">Rino.Brindisi@iguzzini-partner.com.au</span>
+            </div>
+        </header>
+
+        <!-- Section 2: Crypto Live Prices (Mock Data) -->
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Live Crypto Prices</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-10">
+            <!-- Price Card 1 -->
+            <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-yellow-500">
+                <p class="text-sm text-gray-500">BTC/USD</p>
+                <p class="text-xl font-bold">$65,345.21</p>
+                <p class="text-sm text-green-500">+1.5% (24h)</p>
+            </div>
+            <!-- Price Card 2 -->
+            <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-indigo-500">
+                <p class="text-sm text-gray-500">ETH/USD</p>
+                <p class="text-xl font-bold">$3,421.80</p>
+                <p class="text-sm text-red-500">-0.8% (24h)</p>
+            </div>
+            <!-- Price Card 3 -->
+            <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-gray-500">
+                <p class="text-sm text-gray-500">USDT/USD</p>
+                <p class="text-xl font-bold">$1.00</p>
+                <p class="text-sm text-green-500">+0.0% (24h)</p>
+            </div>
+            <!-- Price Card 4 -->
+            <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-blue-500">
+                <p class="text-sm text-gray-500">SOL/USD</p>
+                <p class="text-xl font-bold">$145.55</p>
+                <p class="text-sm text-green-500">+3.2% (24h)</p>
+            </div>
+        </div>
+
+        <!-- Section 3: Portfolio & Actions (Very Professional) -->
+        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl mb-10">
+            <p class="text-2xl font-light text-gray-500 mb-1">Welcome back, <span class="font-semibold text-indigo-700">Rino</span></p>
+            
+            <!-- Total Amount -->
+            <h3 class="text-4xl font-extrabold text-gray-900 mb-6">
+                TOTAL AMOUNT <span class="text-indigo-600">$170,252.03</span>
+            </h3>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <!-- Diagram/Allocation -->
+                <div class="lg:col-span-2">
+                    <h4 class="text-xl font-semibold mb-4 border-b pb-2">Portfolio Allocation Overview</h4>
+                    <div class="flex flex-col sm:flex-row justify-center items-center">
+                        <div class="w-full sm:w-1/2 flex justify-center mb-6 sm:mb-0">
+                            <canvas id="portfolioChart" class="max-w-xs"></canvas>
+                        </div>
+                        <!-- Dynamic Legend -->
+                        <div id="chart-legend" class="sm:ml-8">
+                            <!-- Legend items injected here by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="lg:col-span-1 flex flex-col space-y-4">
+                    <button onclick="openSendModal()"
+                        class="flex justify-center items-center space-x-2 p-3 bg-green-500 text-white font-bold rounded-xl shadow-md hover:bg-green-600 transition duration-200">
+                        <!-- Send Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l.49-1.47a1 1 0 01.905-.662h4.594c.348 0 .685.111.96.315l2.4 1.8a1 1 0 001.376-.665l1.64-4.92c.162-.485.056-.998-.31-1.365zM9 11a1 1 0 102 0 1 1 0 00-2 0z" />
+                        </svg>
+                        <span>SEND</span>
+                    </button>
+                    
+                    <button onclick="showReceiveAddress()"
+                        class="flex justify-center items-center space-x-2 p-3 bg-indigo-500 text-white font-bold rounded-xl shadow-md hover:bg-indigo-600 transition duration-200">
+                        <!-- Receive Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" />
+                        </svg>
+                        <span>RECEIVE</span>
+                    </button>
+
+                    <button onclick="openWithdrawModal()"
+                        class="flex justify-center items-center space-x-2 p-3 bg-red-500 text-white font-bold rounded-xl shadow-md hover:bg-red-600 transition duration-200">
+                        <!-- Withdraw Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+                          <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM7 14a1 1 0 01-2 0 1 1 0 012 0zm12-4a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                        </svg>
+                        <span>WITHDRAW</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: History of Transfer -->
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">History of Transfer</h2>
+        <div class="bg-white rounded-2xl shadow-2xl p-6">
+            <div class="table-container">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50 sticky top-0">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                        <!-- Data Rows (Mock) -->
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10/11/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$5,500</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10/11/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$5,500</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10/11/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$7,500</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10/11/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$7,500</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">05/11/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$6,000</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">05/11/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$5,000</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">05/11/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$600</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">30/10/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$4,500</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">30/10/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$6,000</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">30/10/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$500</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">21/10/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$7,000</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">14/10/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$500</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13/10/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$9,500</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13/10/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$9,500</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13/10/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$1,015</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13/10/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$2,100</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">29/09/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$7,000</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">29/09/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$7,000</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">26/09/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$9,400</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                        <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">26/09/2025</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$6,000</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronic Funds Transfer</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Processed</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Modal Control Functions (using Tailwind 'hidden' class) ---
+        function toggleModal(modalId, isVisible) {
+            const modal = document.getElementById(modalId);
+            if (isVisible) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function closeModal(modalId) {
+            toggleModal(modalId, false);
+        }
+
+        function showPrimaryModal(title, content) {
+            document.getElementById('p-modal-title').innerHTML = title;
+            document.getElementById('p-modal-content').innerHTML = content;
+            toggleModal('primary-modal', true);
+        }
+
+        // --- Chart Data and Initialization ---
+        const portfolioData = {
+            labels: ['Ethereum (ETH)', 'Litecoin (LTC)', 'Bitcoin (BTC)'],
+            percentages: [78, 2, 20],
+            colors: ['#4f46e5', '#3b82f6', '#f59e0b'],
+        };
+
+        function generateLegend() {
+            const legendContainer = document.getElementById('chart-legend');
+            legendContainer.innerHTML = ''; // Clear previous legend
+            
+            portfolioData.labels.forEach((label, index) => {
+                const color = portfolioData.colors[index];
+                const percent = portfolioData.percentages[index];
+                
+                const item = document.createElement('div');
+                item.className = "flex items-center mb-2";
+                item.innerHTML = `
+                    <span class="w-3 h-3 rounded-full mr-2" style="background-color: ${color};"></span>
+                    <span class="text-sm font-medium">${label.split(' ')[0]} <span class="text-gray-500">(${percent}%)</span></span>
+                `;
+                legendContainer.appendChild(item);
+            });
+        }
+
+        function initializeChart() {
+            generateLegend(); // Generate dynamic legend
+            
+            const ctx = document.getElementById('portfolioChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: portfolioData.labels,
+                    datasets: [{
+                        data: portfolioData.percentages,
+                        backgroundColor: portfolioData.colors,
+                        hoverOffset: 15,
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    aspectRatio: 1, // Keep it square
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            display: false // Hide default legend
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // --- SEND Modal Logic ---
+        const cryptocurrencies = [
+            "Bitcoin (BTC)", "Ethereum (ETH)", "Litecoin (LTC)", "Cardano (ADA)", "Solana (SOL)", 
+            "Dogecoin (DOGE)", "Polkadot (DOT)", "Shiba Inu (SHIB)", "Avalanche (AVAX)", "Polygon (MATIC)",
+            "Chainlink (LINK)", "Cosmos (ATOM)", "Wrapped Bitcoin (WBTC)", "Monero (XMR)", "Ethereum Classic (ETC)",
+            "Stellar (XLM)", "VeChain (VET)", "Filecoin (FIL)", "Decentraland (MANA)", "The Sandbox (SAND)",
+            "Algorand (ALGO)", "Internet Computer (ICP)", "Hedera (HBAR)", "Theta (THETA)", "Aave (AAVE)",
+            "Uniswap (UNI)", "Near Protocol (NEAR)", "Fantom (FTM)", "Maker (MKR)", "EOS (EOS)",
+            "Tezos (XTZ)", "Neo (NEO)", "Dash (DASH)", "Kusama (KSM)", "Zcash (ZEC)",
+            "Compound (COMP)", "Synthetix (SNX)", "Curve DAO Token (CRV)", "Basic Attention Token (BAT)", "The Graph (GRT)",
+            "Chiliz (CHZ)", "Enjin Coin (ENJ)", "Axie Infinity (AXS)", "Gala (GALA)", "Flow (FLOW)",
+            "Render Token (RNDR)", "Immutable X (IMX)", "Injective Protocol (INJ)", "Pepe (PEPE)", "Floki (FLOKI)"
+        ];
+
+        function openSendModal() {
+            const tokenListContainer = document.getElementById('token-list');
+            tokenListContainer.innerHTML = ''; // Clear previous list
+            
+            cryptocurrencies.forEach(token => {
+                const button = document.createElement('button');
+                button.textContent = token;
+                button.className = "w-full text-left p-3 border border-gray-100 rounded-lg hover:bg-indigo-50 transition duration-150";
+                button.onclick = () => handleTokenSelection(token);
+                tokenListContainer.appendChild(button);
+            });
+            
+            toggleModal('send-modal', true);
+        }
+
+        function handleTokenSelection(token) {
+            // Close the selection modal
+            closeModal('send-modal');
+            
+            // Show the error notification
+            showPrimaryModal(
+                "Transaction Error", 
+                `Error: Sending **${token}** is currently unavailable due to maintenance. Please try again later.`,
+            );
+        }
+
+        // --- RECEIVE Modal Logic ---
+        function showReceiveAddress() {
+            const btcAddress = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"; // Placeholder BTC Address
+            
+            const content = `
+                <p class="text-center font-semibold mb-3">Your dedicated Bitcoin Receiving Address:</p>
+                <div class="p-3 bg-gray-100 rounded-lg text-sm break-all font-mono text-center mb-4 border border-gray-300">
+                    ${btcAddress}
+                </div>
+                <button onclick="copyToClipboard('${btcAddress}')" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 font-semibold transition duration-200 mt-2">
+                    COPY ADDRESS
+                </button>
+            `;
+            
+            showPrimaryModal("Receive Bitcoin", content);
+        }
+
+        // --- Helper for copying text (as required by constraints) ---
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";  // Avoid scrolling to bottom
+            textArea.style.opacity = 0;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                // Update primary modal content temporarily to confirm copy
+                const contentDiv = document.getElementById('p-modal-content');
+                contentDiv.innerHTML += '<p class="text-xs text-green-500 mt-2 text-center">Address copied to clipboard!</p>';
+            } catch (err) {
+                console.error('Copy failed: ', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // --- WITHDRAW Modal Logic ---
+        function openWithdrawModal() {
+            // Clear previous input value
+            document.getElementById('license-input').value = ''; 
+            toggleModal('withdraw-modal', true);
+        }
+
+        function handleLicenseProceed(event) {
+            event.preventDefault(); // Prevent any form submission side effects
+            const licenseInput = document.getElementById('license-input').value;
+
+            // Close the withdraw modal
+            closeModal('withdraw-modal');
+
+            // Show error notification with fixed message
+            showPrimaryModal(
+                "Verification Failed", 
+                `The entered license number (**${licenseInput}**) is incorrect. Please try again or visit our FAQ for more information.`,
+            );
+        }
+
+        // --- On Load Setup ---
+        window.onload = function() {
+            initializeChart();
+        };
+
+    </script>
+</body>
+</html>
