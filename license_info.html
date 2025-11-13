@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regulatory Compliance & Licensing</title>
+    <!-- Load Tailwind CSS for professional styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Custom styles for the smooth drop-down effect */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+            padding: 0 2rem; /* Initial padding is 0 to hide content smoothly */
+        }
+        
+        .faq-answer.active {
+            /* Padding will be restored when active */
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        /* Styling for the chevron icon rotation */
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+        .faq-question.active .chevron {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container">
+        
+        <!-- Header -->
+        <header class="text-center mb-10 p-6 bg-white rounded-2xl shadow-xl">
+            <h1 class="text-4xl font-extrabold text-indigo-700 mb-2">Regulatory Compliance & Access</h1>
+            <p class="text-lg text-gray-500">Understanding your Financial Licence Number (FLN) requirements.</p>
+        </header>
+
+        <!-- Back Button -->
+        <div class="mb-8">
+            <a href="dashboard.html" class="flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Accordion Container for Regulatory Info -->
+        <div class="space-y-4">
+            
+            <!-- FAQ Item 1: What is a Licence Number? -->
+            <div class="faq-item bg-white rounded-xl shadow-lg border-t-4 border-indigo-500 overflow-hidden">
+                <button class="faq-question w-full flex justify-between items-center p-6 md:p-8 bg-white hover:bg-gray-50 text-gray-900 font-bold text-left text-xl transition duration-300">
+                    <h2>WHAT IS A LICENCE NUMBER?</h2>
+                    <svg class="chevron w-6 h-6 ml-4 text-indigo-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <div class="faq-answer bg-white text-gray-700">
+                    <p class="faq-answer-content text-base leading-relaxed">
+                        The **Financial Licence Number (FLN)** is a mandatory, dynamically generated 12-digit security token required for all high-value transactions within the network, acting as the single point of regulatory control for massive wealth transfers. This number must be digitally signed and verified to authorize any fund withdrawal exceeding the standard daily limit, as well as to validate the legal standing of funds for high-volume trading; without a current, valid FLN, the account is deemed to have failed a necessary Tier-3 Regulatory Audit, resulting in the transaction being automatically flagged as an unregulated attempt and the funds being instantly frozen in the **Unregulated Transfer Queue** until compliance is restored.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2: Why Do You Need a Licence Number? -->
+            <div class="faq-item bg-white rounded-xl shadow-lg border-t-4 border-indigo-500 overflow-hidden">
+                <button class="faq-question w-full flex justify-between items-center p-6 md:p-8 bg-white hover:bg-gray-50 text-gray-900 font-bold text-left text-xl transition duration-300">
+                    <h2>WHY DO YOU NEED A LICENCE NUMBER?</h2>
+                    <svg class="chevron w-6 h-6 ml-4 text-indigo-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <div class="faq-answer bg-white text-gray-700">
+                    <p class="faq-answer-content text-base leading-relaxed">
+                        You need a Licence Number (in formal contexts, often tied to professional certification or legal operation) because it serves as the official, verified proof that you, your business, or your product have met all the necessary regulatory, legal, safety, and competency standards set by a governing authority. This unique identification number allows regulators and the public to ensure **accountability** and verify your legitimate standing to perform a specific activity, making it crucial for establishing trust and demonstrating compliance with the laws that keep the public safe and the market regulated.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3: Is it Necessary to Purchase from a Third Party? -->
+            <div class="faq-item bg-white rounded-xl shadow-lg border-t-4 border-indigo-500 overflow-hidden">
+                <button class="faq-question w-full flex justify-between items-center p-6 md:p-8 bg-white hover:bg-gray-50 text-gray-900 font-bold text-left text-xl transition duration-300">
+                    <h2>IS IT NECESSARY TO PURCHASE FROM A THIRD PARTY?</h2>
+                    <svg class="chevron w-6 h-6 ml-4 text-indigo-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <div class="faq-answer bg-white text-gray-700">
+                    <p class="faq-answer-content text-base leading-relaxed">
+                        To bypass the complexities associated with securing individual **Virtual Asset Service Provider (VASP)** licensure, certain high-net-worth clients may qualify for institutional-grade access on select, regulated digital asset exchanges. This tiered access is often predicated on maintaining a verified minimum custodial balance, typically established at or above the **$25,000 threshold**. Meeting this capital requirement enables the single-instance execution of proprietary smart contracts or exclusive, pre-vetted DeFi strategies, operating under the umbrella of the platform's existing regulatory authorization.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer Call to Action -->
+        <footer class="text-center pt-6 mt-10 border-t border-gray-300">
+            <p class="text-gray-500 text-sm">For official documentation and support, please consult your account manager or the regulatory affairs section.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const parentItem = question.closest('.faq-item');
+                    const answer = parentItem.querySelector('.faq-answer');
+                    const isActive = question.classList.contains('active');
+
+                    // Close all other active questions
+                    faqQuestions.forEach(q => {
+                        if (q !== question && q.classList.contains('active')) {
+                            q.classList.remove('active');
+                            const otherAnswer = q.closest('.faq-item').querySelector('.faq-answer');
+                            otherAnswer.classList.remove('active');
+                            otherAnswer.style.maxHeight = 0;
+                        }
+                    });
+
+                    // Toggle the clicked question
+                    if (isActive) {
+                        // Close it
+                        question.classList.remove('active');
+                        answer.classList.remove('active');
+                        answer.style.maxHeight = 0;
+                    } else {
+                        // Open it
+                        question.classList.add('active');
+                        answer.classList.add('active');
+                        // Set max-height to the scrollHeight of the inner content plus the new padding (3rem total) for smooth animation
+                        const content = answer.querySelector('.faq-answer-content');
+                        // The inner content's scroll height plus the padding (1.5rem top + 1.5rem bottom = 3rem, approx 48px)
+                        answer.style.maxHeight = (content.scrollHeight + 48) + 'px'; 
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
