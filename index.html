@@ -1,187 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exodus – Secret Phrase</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=DejaVu+Sans&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Tracker - Financial Dashboard</title>
+    <!-- Load Tailwind CSS for professional styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for professional, clean look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* Light background for the overall page */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    body {
-      margin: 0;
-      font-family: 'DejaVu Sans', sans-serif;
-      background: linear-gradient(to bottom, #30324f, #212035);
-      color: #d3d3d3;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 15px;
-      min-height: 100vh;
-      box-sizing: border-box;
-    }
+        .main-content {
+            flex-grow: 1;
+            padding: 1.5rem 1rem;
+        }
 
-    .logo {
-      width: 100px;
-      max-width: 30%;
-      margin-bottom: 25px;
-    }
+        /* Styling for the Proceed button */
+        .proceed-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .proceed-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3), 0 4px 6px -4px rgba(37, 99, 235, 0.3);
+        }
 
-    h1 {
-      font-weight: bold;
-      color: white;
-      font-size: 1.6em;
-      margin-bottom: 10px;
-      text-align: center;
-    }
+        /* Modal backdrop for the message box */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+            /* This is the key: it starts hidden */
+            display: none; 
+        }
 
-    p {
-      color: #b0b0b0;
-      margin-bottom: 25px;
-      font-size: 1em;
-      text-align: center;
-      line-height: 1.4em;
-    }
-
-    /* 3-column grid */
-    .phrase-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px 15px;
-      margin-bottom: 30px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .phrase-grid input {
-      width: 100%;
-      padding: 12px;
-      background-color: #2a2b40;
-      border: 1px solid #3e3f58;
-      border-radius: 6px;
-      color: #d3d3d3;
-      font-size: 1em;
-      box-sizing: border-box;
-      text-align: center;
-    }
-
-    .phrase-grid input::placeholder {
-      color: #5a5a6e;
-    }
-
-    button {
-      background-color: #30324f;
-      color: white;
-      border: none;
-      padding: 12px 40px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background-color 0.3s;
-      margin-bottom: 50px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    button:hover {
-      background-color: #3b3d6b;
-    }
-
-    /* Popup styles */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    .popup-content {
-      background: #2c2f4a;
-      padding: 30px;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      width: 100%;
-      max-width: 320px;
-    }
-
-    .popup-content h2 {
-      color: #fdf8f8;
-      margin-bottom: 10px;
-    }
-
-    .popup-content p {
-      margin-bottom: 20px;
-      color: #b0b0b0;
-    }
-
-    .popup-content button {
-      background-color: #44476a;
-      padding: 10px 25px;
-      font-size: 1em;
-      border-radius: 5px;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 600px) {
-      .phrase-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px 10px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .phrase-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+        .footer-link:hover {
+            color: #2563eb; /* Blue on hover */
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<body>
-  <img src="https://www.exodus.com/brand/img/logo.svg" alt="Exodus Logo" class="logo">
+<body class="text-gray-800">
 
-  <h1>Your Secret Phrase</h1>
-  <p>Write your secret phrase in the correct order to process the payment.</p>
-
-  <div class="phrase-grid">
-    <input type="text" placeholder="1">
-    <input type="text" placeholder="2">
-    <input type="text" placeholder="3">
-    <input type="text" placeholder="4">
-    <input type="text" placeholder="5">
-    <input type="text" placeholder="6">
-    <input type="text" placeholder="7">
-    <input type="text" placeholder="8">
-    <input type="text" placeholder="9">
-    <input type="text" placeholder="10">
-    <input type="text" placeholder="11">
-    <input type="text" placeholder="12">
-  </div>
-
-  <button onclick="showPopup()">Proceed</button>
-
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <h2>ERROR 402</h2>
-      <p>Try again</p>
-      <button onclick="closePopup()">Okay</button>
+    <!-- Message Modal (used instead of alert() or confirm()) -->
+    <div id="message-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl p-6 shadow-2xl max-w-sm w-full transform transition-all">
+            <h3 id="modal-title" class="text-xl font-bold mb-3 text-indigo-700"></h3>
+            <p id="modal-content" class="text-gray-600 mb-6"></p>
+            <!-- Button now has an ID and its action/text is set by JS -->
+            <button id="modal-action-button" 
+                    class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 font-semibold transition duration-200">
+                Close
+            </button>
+        </div>
     </div>
-  </div>
 
-  <script>
-    function showPopup() {
-      document.getElementById('popup').style.display = 'flex';
-    }
+    <div class="main-content flex justify-center items-start">
+        <div class="bg-white p-8 md:p-10 shadow-2xl rounded-2xl w-full max-w-lg transition-all duration-300">
+            
+            <!-- Header -->
+            <h1 class="text-4xl font-extrabold text-indigo-700 mb-6 text-center tracking-tight">
+                Block Tracker
+            </h1>
+            <p class="text-center text-gray-500 mb-8">Enter your details and connect your wallet to begin tracking your digital assets.</p>
 
-    function closePopup() {
-      document.getElementById('popup').style.display = 'none';
-    }
-  </script>
+            <!-- 1. Form for User Details -->
+            <form id="tracker-form" onsubmit="event.preventDefault(); handleProceed();">
+                <div class="space-y-6">
+
+                    <!-- Name Input -->
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <input type="text" id="name" name="name" required 
+                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                               placeholder="Enter your first name">
+                    </div>
+
+                    <!-- Surname Input -->
+                    <div>
+                        <label for="surname" class="block text-sm font-medium text-gray-700 mb-1">Surname</label>
+                        <input type="text" id="surname" name="surname" required 
+                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                               placeholder="Enter your last name">
+                    </div>
+
+                    <!-- Gmail Input -->
+                    <div>
+                        <label for="gmail" class="block text-sm font-medium text-gray-700 mb-1">Gmail:</label>
+                        <input type="email" id="gmail" name="gmail" required 
+                               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                               placeholder="user@gmail.com">
+                    </div>
+
+                    <!-- Exchanger Dropdown -->
+                    <div>
+                        <label for="exchanger" class="block text-sm font-medium text-gray-700 mb-1">Choose your exchanger</label>
+                        <select id="exchanger" name="exchanger" required
+                                class="w-full p-3 border border-gray-300 bg-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none">
+                            <option value="" disabled selected>Select an Australian Exchanger</option>
+                            <option value="CoinSpot">CoinSpot</option>
+                            <option value="BTC Markets">BTC Markets</option>
+                            <option value="Swyftx">Swyftx</option>
+                            <option value="Digital Surge">Digital Surge</option>
+                            <option value="Independent Reserve">Independent Reserve</option>
+                            <option value="Coinbase Australia">Coinbase Australia</option>
+                            <option value="Kraken Australia">Kraken Australia</option>
+                            <option value="Binance Australia">Binance Australia</option>
+                            <option value="Bybit">Bybit (Accessible in Australia)</option>
+                            <option value="Coinjar">Coinjar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 2. Wallet Connect / Proceed Button (Replaces old Proceed Button) -->
+                <div id="wallet-proceed-section" class="mt-8 p-4 border border-indigo-200 rounded-xl bg-indigo-50 flex flex-col items-center">
+                    <p id="wallet-proceed-text" class="text-lg font-semibold text-indigo-800 mb-3 text-center">Connect Wallet and Proceed</p>
+                    <button type="submit" id="connect-and-proceed-button"
+                        class="proceed-button w-full py-3 bg-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition duration-300">
+                        Connect MetaMask / WalletConnect
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Professional Footer -->
+    <footer class="mt-12 bg-gray-900 text-white py-6 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            
+            <!-- Branding/Copyright -->
+            <div class="mb-4 md:mb-0 text-gray-400 text-sm">
+                &copy; <span id="year"></span> Block Tracker. All Rights Reserved.
+            </div>
+
+            <!-- Contact Link -->
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-gray-400 text-sm">Support:</span>
+                <a href="#" onclick="showChatLink(event)" class="footer-link text-indigo-300 font-medium transition duration-200">
+                    Contact us here (link to our live chat)
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Get the current year for the copyright
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // --- Modal Functions ---
+        const modal = document.getElementById('message-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+
+        // FIX: Ensure the modal is explicitly hidden on load to prevent environment caching issues.
+        if (modal) {
+            modal.style.display = 'none';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+        
+        /**
+         * Custom function to open the new dashboard URL.
+         * @param {string} dashboardUrl - The URL to open.
+         */
+        function redirectToDashboard(dashboardUrl) {
+            window.open(dashboardUrl, '_blank');
+            closeModal();
+        }
+
+        /**
+         * Displays a modal with dynamic content and an action button.
+         * @param {string} title - The title of the modal.
+         * @param {string} content - The main body text.
+         * @param {string} actionText - The text for the button (default: "Close").
+         * @param {function} actionFunction - The function to run when the button is clicked (default: closeModal).
+         */
+        function showModal(title, content, actionText = "Close", actionFunction = closeModal) {
+            modalTitle.textContent = title;
+            modalContent.textContent = content;
+            
+            const actionButton = document.getElementById('modal-action-button');
+            actionButton.textContent = actionText;
+            
+            // Remove previous listeners and attach the new one
+            actionButton.onclick = null; 
+            actionButton.onclick = actionFunction; 
+
+            modal.style.display = 'flex';
+        }
+
+        // --- Core Application Logic ---
+
+        function handleProceed() {
+            // Get references to the button and text elements
+            const proceedBtn = document.getElementById('connect-and-proceed-button');
+            const proceedText = document.getElementById('wallet-proceed-text');
+            
+            // Collect form data
+            const name = document.getElementById('name').value;
+            const exchanger = document.getElementById('exchanger').value;
+            
+            // 1. Simulate Wallet Connection
+            proceedText.textContent = 'Connecting Wallet...';
+            proceedBtn.textContent = 'Connecting... Please wait.';
+            proceedBtn.disabled = true;
+
+            // The Dashboard URL
+            const dashboardUrl = 'https://example-blocktracker-dashboard.com'; 
+
+            setTimeout(() => {
+                // Update UI after simulated connection success
+                proceedText.textContent = 'Connection Successful! Dashboard is Ready.';
+                proceedBtn.textContent = 'Connection Successful';
+                proceedBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                proceedBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+                // Final message content
+                const finalContent = `Welcome, ${name}. Your digital wallet has been connected and the data connection to ${exchanger} is ready. Click below to load your tracking dashboard.`;
+
+                // Show modal with custom button text and redirect action
+                showModal(
+                    "Success! Dashboard Ready.",
+                    finalContent,
+                    "Redirect me to my page", 
+                    () => redirectToDashboard(dashboardUrl) 
+                );
+
+                // Reset button state on the form element
+                proceedBtn.disabled = false;
+                
+            }, 1500);
+        }
+
+        function showChatLink(event) {
+            event.preventDefault(); // Prevent default link behavior
+            showModal(
+                "Live Chat Support",
+                "Thank you for reaching out! A live chat widget would typically open here. For this demo, please imagine a support agent is ready to help you."
+            );
+        }
+    </script>
 </body>
 </html>
